@@ -1,0 +1,23 @@
+version: '3.9'
+
+networks:
+  insurance_network:
+    driver: bridge
+
+services:
+  postgres_db:
+    image: postgres:15
+    container_name: postgres_db
+    env_file:
+      - ./.env
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 4G
+    networks:
+      - insurance_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
