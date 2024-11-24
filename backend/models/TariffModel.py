@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import Date
-from database import Base
+from backend.database import Base
 
 
 class Tariff(Base):

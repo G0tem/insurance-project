@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from backend.api_v1.Router import price_router
+from backend.api_v1.TariffRouter import tariff_router
 
 
 app = FastAPI()
 
-app.include_router(price_router)
+app.include_router(tariff_router)
