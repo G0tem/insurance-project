@@ -49,6 +49,8 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - 2181:2181
+    networks:
+      - insurance_network
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -64,6 +66,8 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - insurance_network
 
   kafka-ui:
     image: provectuslabs/kafka-ui
@@ -77,6 +81,8 @@ services:
     links:
       - kafka
       - zookeeper
+    networks:
+      - insurance_network
 
 volumes:
   postgres_data_insurance:
