@@ -1,8 +1,7 @@
-from sqlalchemy.orm import declarative_base, Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import Date
+from database import Base
 
-
-Base = declarative_base()
 
 class Tariff(Base):
     __tablename__ = "tariff"
