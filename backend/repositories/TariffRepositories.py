@@ -1,105 +1,77 @@
-from fastapi import HTTPException
+from typing import List
 from models.TariffModel import Tariff
-from sqlalchemy import select
-# from schemas.TariffSchemas import TariffCreate
+from sqlalchemy import delete, select
+from schemas.TariffSchemas import TariffSchema, UpdateTariffSchema
+from sqlalchemy.ext.asyncio import AsyncSession
+from datetime import datetime
+
+
+"""   
+{
+    "2020-06-01": [
+        {
+            "cargo_type": "Glass",
+            "rate": "0.04"
+        },
+        {
+            "cargo_type": "Other",
+            "rate": "0.01"
+        }
+    ],
+    "2020-07-01": [
+        {
+            "cargo_type": "Glass",
+            "rate": "0.035"
+        },
+        {
+            "cargo_type": "Other",
+            "rate": "0.015"
+        }
+    ]
+}
+""" 
 
 
 class TariffRepositories:
     """Class for tariff repositories."""
+    @staticmethod
+    async def get_tariffs(session: AsyncSession) -> List[Tariff]:
+        result = await session.execute(select(Tariff))
+        tariffs = result.scalars().all()
+        return [tariff.__dict__ for tariff in tariffs]
 
-    async def get_tariff(session):
-        tariffs = await session.execute(
-            select(Tariff).order_by(Tariff.id)
-        )
-        return [
-            {
-                "id": tariff.id,
-                "price": tariff.price,
-                "tariff_date": tariff.tariff_date,
-            }
-            for tariff in tariffs.scalars().all()
-        ]
-
-#     async def post_tariff(tariff, session):
-#         new_tariff = Tariff(
-#             price=tariff.price,
-#             tariff_date=tariff.tariff_date,
-#         )
-#         session.add(new_tariff)
-#         await session.commit()
-#         await session.refresh(new_tariff)
-#         return {
-#             "id": new_tariff.id,
-#             "price": new_tariff.price,
-#             "tariff_date": new_tariff.tariff_date,
-#         } 
-
-#     async def update_tariff(id: int, tariff: TariffCreate, session):
-#         tariff_to_update = await session.get(Tariff, id)
-#         if tariff_to_update is None:
-#             raise HTTPException(status_code=404, detail=f"Нет тарифа с {id}, изменить невозможно")
-#         tariff_to_update.price = tariff.price
-#         tariff_to_update.tariff_date = tariff.tariff_date
-#         await session.commit()
-#         await session.refresh(tariff_to_update)
-#         return {
-#             "id": tariff_to_update.id,
-#             "price": tariff_to_update.price,
-#             "tariff_date": tariff_to_update.tariff_date,
-#         }
-
-#     async def delete_tariff(id: int, session):
-#         tariff_to_delete = await session.get(Tariff, id)
-#         if tariff_to_delete is None:
-#             raise HTTPException(status_code=404, detail=f"Нет тарифа с {id}, удалить невозможно")
-#         await session.delete(tariff_to_delete)
-#         await session.commit()
-#         return {"message": "Tariff deleted"}
+    @staticmethod
+    async def get_tariff(tariff_id: int, session: AsyncSession) -> Tariff:
+        result = await session.execute(select(Tariff).where(Tariff.id == tariff_id))
+        tariff = result.scalars().first()
+        return tariff.__dict__
     
-# {
-#     "2020-06-01": [
-#         {
-#             "cargo_type": "Glass",
-#             "rate": "0.04"
-#         },
-#         {
-#             "cargo_type": "Other",
-#             "rate": "0.01"
-#         }
-#     ],
-#     "2020-07-01": [
-#         {
-#             "cargo_type": "Glass",
-#             "rate": "0.035"
-#         },
-#         {
-#             "cargo_type": "Other",
-#             "rate": "0.015"
-#         }
-#     ]
-# }
+    @staticmethod
+    async def post_tariff(tariff: TariffSchema, session: AsyncSession) -> None:
+        for date, items in tariff.data.items():
+            for item in items:
+                tariff_db = Tariff(
+                    tariff_date=datetime.strptime(date, "%Y-%m-%d").date(),
+                    cargo_type=item.cargo_type,
+                    rate=item.rate
+                )
+                session.add(tariff_db)
+        await session.commit()
 
-# # Данные для сохранения
-# data = {
-#     "2020-06-01": [
-#         {"cargo_type": "Glass", "rate": 0.04},
-#         {"cargo_type": "Other", "rate": 0.01}
-#     ],
-#     "2020-07-01": [
-#         {"cargo_type": "Glass", "rate": 0.035},
-#         {"cargo_type": "Other", "rate": 0.015}
-#     ]
-# }
+    @staticmethod
+    async def update_tariff(tariff_id: int, tariff: UpdateTariffSchema, session: AsyncSession) -> None:
+        result = await session.execute(select(Tariff).where(Tariff.id == tariff_id))
+        tariff_db = result.scalars().first()
+        if tariff_db:
+            if tariff.tariff_date:
+                tariff_db.tariff_date = tariff.tariff_date
+            if tariff.cargo_type:
+                tariff_db.cargo_type = tariff.cargo_type
+            if tariff.rate:
+                tariff_db.rate = tariff.rate
+            await session.commit()
 
-# # Сохраняем данные в базу данных
-# for date, rates in data.items():
-#     for rate in rates:
-#         insurance_rate = InsuranceRate(
-#             date=date,
-#             cargo_type=rate['cargo_type'],
-#             rate=rate['rate']
-#         )
-#         session.add(insurance_rate)
-
-# # Commit изменений
-# session.commit()
+    @staticmethod
+    async def delete_tariff(tariff_id: int, session: AsyncSession) -> None:
+        await session.execute(delete(Tariff).where(Tariff.id == tariff_id))
+        await session.commit()

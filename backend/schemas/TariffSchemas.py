@@ -1,12 +1,16 @@
-from pydantic import BaseModel
-from typing import List
 from datetime import date
+from typing import Optional
+from pydantic import BaseModel
 
 
-class Tariff(BaseModel):
+class TariffItem(BaseModel):
     cargo_type: str
     rate: float
 
-class Tariffs(BaseModel):
-    date: date
-    rates: List[Tariff]
+class TariffSchema(BaseModel):
+    data: dict[str, list[TariffItem]]
+
+class UpdateTariffSchema(BaseModel):
+    tariff_date: Optional[date]
+    cargo_type: Optional[str]
+    rate: Optional[float]
