@@ -5,12 +5,11 @@ from database import Base
 from decimal import Decimal
 
 
-class InsuranceCost(Base):
-    __tablename__ = "insurance_costs"
+class Insurance(Base):
+    __tablename__ = "insurance"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     insurance_date: Mapped[Date] = mapped_column(Date())
     cargo_type: Mapped[str]
-    rate: Mapped[float]
-    price: Mapped[Decimal] = mapped_column(Numeric(asdecimal=True, scale=2))
-    
+    declared_cost: Mapped[Decimal] = mapped_column(Numeric(asdecimal=True, scale=2))
+    insurance_cost: Mapped[Decimal] = mapped_column(Numeric(asdecimal=True, scale=2))
