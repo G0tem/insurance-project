@@ -1,11 +1,11 @@
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import Date
-from backend.database import Base
+from database import Base
 
 
 class Tariff(Base):
     __tablename__ = "tariff"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    price: Mapped[int]
+    price: Mapped[float]
     tariff_date: Mapped[Date] = mapped_column(Date())

@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends
 from typing import Annotated
 
-from backend.repositories.TariffRepositories import TariffRepositories
-from backend.schemas.TariffSchemas import Tariff, TariffCreate
+from repositories.TariffRepositories import TariffRepositories
+from schemas.TariffSchemas import Tariff, TariffCreate
 from sqlalchemy.ext.asyncio import AsyncSession
-from backend.database import get_async_session
+from database import get_async_session
 
 
 tariff_router = APIRouter(

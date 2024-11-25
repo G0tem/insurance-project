@@ -14,7 +14,7 @@ from config import POSTGRES_HOST, POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_PORT,
 config = context.config
 
 section = config.config_ini_section
-config.set_section_option(section, "POSTGRES_HOST", "0.0.0.0")
+config.set_section_option(section, "POSTGRES_HOST", POSTGRES_HOST)
 config.set_section_option(section, "POSTGRES_PORT", POSTGRES_PORT)
 config.set_section_option(section, "POSTGRES_USER", POSTGRES_USER)
 config.set_section_option(section, "POSTGRES_DB", POSTGRES_DB)

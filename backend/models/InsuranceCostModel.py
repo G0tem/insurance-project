@@ -1,6 +1,8 @@
+from sqlalchemy import Numeric
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import Date
 from database import Base
+from decimal import Decimal
 
 
 class InsuranceCost(Base):
@@ -10,5 +12,5 @@ class InsuranceCost(Base):
     insurance_date: Mapped[Date] = mapped_column(Date())
     cargo_type: Mapped[str]
     rate: Mapped[float]
-    price: Mapped[int]
+    price: Mapped[Decimal] = mapped_column(Numeric(asdecimal=True, scale=2))
     

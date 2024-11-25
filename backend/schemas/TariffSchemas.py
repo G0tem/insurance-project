@@ -3,9 +3,9 @@ from datetime import date
 
 class Tariff(BaseModel):
     id: int
-    price: int
+    price: float
     tariff_date: date
 
 class TariffCreate(BaseModel):
-    price: int
+    price: float
     tariff_date: date

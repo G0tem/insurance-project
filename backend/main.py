@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from backend.api_v1.TariffRouter import tariff_router
+from api_v1.TariffRouter import tariff_router
 
 
 app = FastAPI()

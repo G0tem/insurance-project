@@ -1,7 +1,7 @@
 from fastapi import HTTPException
-from backend.models.TariffModel import Tariff
+from models.TariffModel import Tariff
 from sqlalchemy import select
-from backend.schemas.TariffSchemas import TariffCreate
+from schemas.TariffSchemas import TariffCreate
 
 
 class TariffRepositories:
