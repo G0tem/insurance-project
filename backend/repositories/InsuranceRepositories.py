@@ -11,7 +11,6 @@ from datetime import date
 
 class InsuranceRepositories:
     """Class for insurance repositories."""
-
     @staticmethod
     async def post_insurance(insurance: InsuranceSchema, session: AsyncSession) -> None:
         rate = await InsuranceRepositories.get_rate(insurance, session)
@@ -19,7 +18,7 @@ class InsuranceRepositories:
         total_cost = total_cost.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
 
         await InsuranceRepositories.save_insurance_result(insurance, total_cost, session)
-        return {"стоимость страхования": total_cost}
+        return {"cost of insurance": total_cost}
 
     @staticmethod    
     async def get_rate(insurance: InsuranceSchema, session: AsyncSession) -> float:

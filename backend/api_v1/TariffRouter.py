@@ -33,7 +33,7 @@ async def get_tariff(tariff_id: int, session: AsyncSession = Depends(get_async_s
 async def post_tariff(tariff: Annotated[TariffSchema, Depends()], session: AsyncSession = Depends(get_async_session)):
     try:
         await TariffRepositories.post_tariff(tariff, session)
-        return {"message": "JSON успешно загружен"}
+        return {"message": "Tariff loaded successfully"}
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
 
@@ -41,7 +41,7 @@ async def post_tariff(tariff: Annotated[TariffSchema, Depends()], session: Async
 async def update_tariff(tariff_id: int, tariff: Annotated[UpdateTariffSchema, Depends()], session: AsyncSession = Depends(get_async_session)):
     try:
         await TariffRepositories.update_tariff(tariff_id, tariff, session)
-        return {"message": "Тариф успешно обновлен"}
+        return {"message": "Tariff successfully updated"}
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
 
@@ -49,6 +49,6 @@ async def update_tariff(tariff_id: int, tariff: Annotated[UpdateTariffSchema, De
 async def delete_tariff(tariff_id: int, session: AsyncSession = Depends(get_async_session)):
     try:
         await TariffRepositories.delete_tariff(tariff_id, session)
-        return {"message": "Тариф успешно удален"}
+        return {"message": "Tariff successfully removed"}
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
