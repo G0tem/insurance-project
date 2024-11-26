@@ -42,7 +42,8 @@
 Укажите: типа груза, дату, обьявленную стоимость. В результате вы получитите стоимость или исключение если в бд нет тарифа на данный товар.
 Пример curl
 
-```bash curl -X 'POST'
+```bash 
+curl -X 'POST'
 'http://0.0.0.0:8000/api/v1/insurance/?insurance_date=2020-07-01&cargo_type=Glass&declared_cost=110.50'
 -H 'accept: application/json'
 -d '' 
