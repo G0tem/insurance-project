@@ -1,4 +1,5 @@
 from typing import List
+from kafka_log.Message import Message
 from models.TariffModel import Tariff
 from sqlalchemy import delete, select
 from schemas.TariffSchemas import TariffSchema, UpdateTariffSchema
@@ -22,6 +23,7 @@ class TariffRepositories:
     
     @staticmethod
     async def post_tariff(tariff: TariffSchema, session: AsyncSession) -> None:
+        count = 0
         for date, items in tariff.data.items():
             for item in items:
                 tariff_db = Tariff(
@@ -30,7 +32,9 @@ class TariffRepositories:
                     rate=item.rate
                 )
                 session.add(tariff_db)
+                count += 1
         await session.commit()
+        await Message.log_action('post_tariff, tariffs added: ' + str(count))
 
     @staticmethod
     async def update_tariff(tariff_id: int, tariff: UpdateTariffSchema, session: AsyncSession) -> None:
@@ -44,8 +48,10 @@ class TariffRepositories:
             if tariff.rate:
                 tariff_db.rate = tariff.rate
             await session.commit()
+            await Message.log_action('update_tariff with id: ' + str(tariff_id))
 
     @staticmethod
     async def delete_tariff(tariff_id: int, session: AsyncSession) -> None:
         await session.execute(delete(Tariff).where(Tariff.id == tariff_id))
         await session.commit()
+        await Message.log_action('delete_tariff with id: ' + str(tariff_id))
