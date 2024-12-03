@@ -2,8 +2,7 @@ import pytest
 import json
 from datetime import datetime
 from sqlalchemy import insert
-from database import Base, async_session_maker
-
+from database import Base, async_session
 from config import MODE
 from models.TariffModel import Tariff
 
@@ -15,12 +14,12 @@ def open_testdata_json(filename):
 
 @pytest.fixture(scope="session", autouse=True)
 def prep_database():
-    print("mode: ", MODE)
     # test env
+    print("mode: ", MODE)
     assert MODE == "TEST"
 
     # Database cleanup
-    with async_session_maker() as session:
+    with async_session() as session:
         for table in reversed(Base.metadata.sorted_tables):
             session.execute(table.delete())
         session.commit()
@@ -33,7 +32,7 @@ def prep_database():
         t["tariff_date"] = datetime.strptime(t["tariff_date"], "%Y-%m-%d").date()
         print(t)
 
-    with async_session_maker() as session:
+    with async_session() as session:
         data_to_add = [
             insert(Tariff).values(tariff)
         ]
