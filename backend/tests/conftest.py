@@ -43,8 +43,8 @@ def prep_database():
         session.close()
     yield
     # clean up the test database at the end of tests
-    # with async_session_maker() as session:
-    #     for table in reversed(Base.metadata.sorted_tables):
-    #         session.execute(table.delete())
-    #     session.commit()
-    #     session.close()
+    with async_session() as session:
+        for table in reversed(Base.metadata.sorted_tables):
+            session.execute(table.delete())
+        session.commit()
+        session.close()
