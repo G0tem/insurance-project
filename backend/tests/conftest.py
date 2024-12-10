@@ -1,10 +1,13 @@
 import pytest
+import asyncio
 import json
 from datetime import datetime
 from sqlalchemy import insert
 from database import Base, async_session
 from config import MODE
 from models.TariffModel import Tariff
+from httpx import AsyncClient
+from main import app
 
 
 def open_testdata_json(filename):
@@ -13,17 +16,17 @@ def open_testdata_json(filename):
 
 
 @pytest.fixture(scope="session", autouse=True)
-def prep_database():
+async def prep_database():
     # test env
     print("mode: ", MODE)
     assert MODE == "TEST"
 
     # Database cleanup
-    with async_session() as session:
+    async with async_session() as session:
         for table in reversed(Base.metadata.sorted_tables):
-            session.execute(table.delete())
-        session.commit()
-        session.close()
+            await session.execute(table.delete())
+        await session.commit()
+        await session.close()
     
     # get testdata
     tariff = open_testdata_json("mock_tariff")
@@ -32,19 +35,25 @@ def prep_database():
         t["tariff_date"] = datetime.strptime(t["tariff_date"], "%Y-%m-%d").date()
         print(t)
 
-    with async_session() as session:
+    async with async_session() as session:
         data_to_add = [
             insert(Tariff).values(tariff)
         ]
 
         for command in data_to_add:
-            session.execute(command)
-        session.commit()
-        session.close()
+            await session.execute(command)
+        await session.commit()
+        await session.close()
     yield
     # clean up the test database at the end of tests
-    with async_session() as session:
+    async with async_session() as session:
         for table in reversed(Base.metadata.sorted_tables):
-            session.execute(table.delete())
-        session.commit()
-        session.close()
+            await session.execute(table.delete())
+        await session.commit()
+        await session.close()
+
+@pytest.fixture(scope="session", autouse=True)
+async def ac():
+    async with AsyncClient(app=app, base_url="http://127.0.0.1:8000") as client:
+        yield client
+        client.aclose()
