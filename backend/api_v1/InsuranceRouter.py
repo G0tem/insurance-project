@@ -14,7 +14,7 @@ insurance_router = APIRouter(
     tags=["Insurance"],
 )
 
-@insurance_router.post("/insurance/")
+@insurance_router.post("/insurance")
 async def post_insurance(insurance: Annotated[InsuranceSchema, Depends()], session: AsyncSession = Depends(get_async_session)):
     try:
         result = await InsuranceRepositories.post_insurance(insurance, session)

@@ -1,11 +1,11 @@
 from sqlalchemy import select
 from fastapi.encoders import jsonable_encoder
 from itertools import zip_longest
-from database import async_session_maker
+from database import async_session
 
 
 async def get_entity_by_entry(entity_model, entry_name, entry):
-        session = async_session_maker()
+        session = async_session()
         query = select(entity_model).where(getattr(entity_model, entry_name) == entry)
         exec_q = await session.execute(query)
         entity = exec_q.first()
@@ -16,7 +16,7 @@ async def get_entity_by_entry(entity_model, entry_name, entry):
         return entity
 
 async def get_all_entities(entity_model):
-        session = async_session_maker()
+        session = async_session()
         query = select(entity_model)
         exec_q = await session.execute(query)
         entities = exec_q.scalars().all()

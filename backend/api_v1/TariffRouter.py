@@ -13,7 +13,7 @@ tariff_router = APIRouter(
     tags=["Tariff"],
 )
 
-@tariff_router.get("/tariff/")
+@tariff_router.get("/tariff")
 async def get_tariffs(session: AsyncSession = Depends(get_async_session)):
     try:
         tariffs = await TariffRepositories.get_tariffs(session)
@@ -29,7 +29,7 @@ async def get_tariff(tariff_id: int, session: AsyncSession = Depends(get_async_s
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
 
-@tariff_router.post("/tariff/")
+@tariff_router.post("/tariff")
 async def post_tariff(tariff: Annotated[TariffSchema, Depends()], session: AsyncSession = Depends(get_async_session)):
     try:
         await TariffRepositories.post_tariff(tariff, session)

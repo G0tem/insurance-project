@@ -46,11 +46,11 @@ async def prep_database():
         await session.close()
     yield
     # clean up the test database at the end of tests
-    async with async_session() as session:
-        for table in reversed(Base.metadata.sorted_tables):
-            await session.execute(table.delete())
-        await session.commit()
-        await session.close()
+    # async with async_session() as session:
+    #     for table in reversed(Base.metadata.sorted_tables):
+    #         await session.execute(table.delete())
+    #     await session.commit()
+    #     await session.close()
 
 @pytest.fixture(scope="session", autouse=True)
 async def ac():

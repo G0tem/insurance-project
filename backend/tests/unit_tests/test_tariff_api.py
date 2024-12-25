@@ -2,7 +2,7 @@ from typing import Literal
 import pytest
 import json
 from httpx import AsyncClient
-from tests.unit_tests.entity_tests.test_crud_api import BaseCrudTests
+from tests.unit_tests.test_crud_api import BaseCrudTests
 from backend.models.TariffModel import Tariff
 
 class TestComment:
